@@ -19,17 +19,20 @@ avatar %>%
   mutate(linenumber = row_number()) %>% #Label the lines spoken by Zuko by book and chapter 
   ungroup() %>% 
   unnest_tokens(output = word, input = character_words, token = "words")  %>% #add column with each row = one word spoken by Zuko
-  filter(word %in%  c("avatar", "aang", "aang's", "avatar's")) %>% #Only retain these words 
+  filter(word %in%  c("avatar", "aang", "aang's", "avatar's", "airbender")) %>% #Only retain these words 
   mutate(av = 
            case_when(word == "avatar"  ~ 1,
-                     word == "avatar's" ~ 1)) %>% #Create a column where a value of 1 is given to each instance of the word Avatar (NA for Aang)
+                     word == "avatar's" ~ 1)) %>% #Create a column where a value of 1 is given to each instance of the word Avatar
   mutate(aa = 
            case_when(word == "aang"  ~ 1,
-                     word == "aang's" ~ 1)) %>% #Create a column where a value of 1 is given to each instance of the word Aang (NA for Avatar)
+                     word == "aang's" ~ 1)) %>% #Create a column where a value of 1 is given to each instance of the word Aang 
+  mutate(ai = 
+           case_when(word == "airbender" ~ 1)) %>% #Create a column where a value of 1 is given to each instance of the word airbender
   group_by(book_num, chapter_num) %>% 
   summarise(Avatar = sum(av, na.rm = T),
-            Aang = sum(aa, na.rm = T)) %>% #count the number of occurences for each name within each chapter
-  gather(key = "Name", value = "Frequency", Avatar, Aang) %>% #change to long format, creating one column that has a factor variable with the two names, and a second column with the values
+            Aang = sum(aa, na.rm = T),
+            Airbender = sum(ai, na.rm = T)) %>% #count the number of occurences for each name within each chapter
+  gather(key = "Name", value = "Frequency", Avatar, Aang, Airbender) %>% #change to long format, creating one column that has a factor variable with the two names, and a second column with the values
   ungroup() %>% 
   mutate(book_num =
            factor(book_num,
@@ -45,7 +48,7 @@ ggplot(avatar, aes(x=chapter_num, y=Frequency, fill = Name)) +
   geom_bar(position = "stack", stat = "identity", width = .8) + 
   facet_wrap(~book_num) +
   xlab("Chapter") +
-  labs(title = "Avatar: The Last Airbender", subtitle = "The number of times Zuko mentions Avatar/Aang") +
+  labs(title = "Avatar: The Last Airbender", subtitle = "The number of times Zuko mentions the Avatar") +
   scale_y_continuous(limits = c(0,8), expand = c(0,0)) +
   theme_avatar(text.font = "Slayer", 
                title.color = "#a10000",
@@ -54,7 +57,7 @@ ggplot(avatar, aes(x=chapter_num, y=Frequency, fill = Name)) +
                legend.title.color = '#c9c9c9', 
                legend.text.color = '#c9c9c9', 
                axis.title.color = '#c9c9c9') +
-  scale_fill_manual(values = c('#d0a000', '#600000')) +
+  scale_fill_manual(values = c('#d0a000', '#785e3c', '#600000')) +
   theme(plot.title = element_text(hjust = 0.5),
         plot.subtitle = element_text(hjust = 0.5),
         plot.background = element_rect(fill = "black"),
