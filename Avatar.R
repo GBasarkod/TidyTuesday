@@ -27,13 +27,14 @@ avatar %>%
            case_when(word == "aang"  ~ 1,
                      word == "aang's" ~ 1)) %>% #Create a column where a value of 1 is given to each instance of the word Aang (NA for Avatar)
   group_by(book_num, chapter_num) %>% 
-  summarise(Avatar = sum(av),
-            Aang = sum(aa)) %>% #count the number of occurences for each name within each chapter
+  summarise(Avatar = sum(av, na.rm = T),
+            Aang = sum(aa, na.rm = T)) %>% #count the number of occurences for each name within each chapter
   gather(key = "Name", value = "Frequency", Avatar, Aang) %>% #change to long format, creating one column that has a factor variable with the two names, and a second column with the values
   ungroup() %>% 
   mutate(book_num =
            factor(book_num,
-                  labels = c("Water", "Earth", "Fire"))) -> avatar #Change value of book factors to the names of the books (actually, there was a variable with book names already, so just use that one instead)
+                  labels = c("Water", "Earth", "Fire"))) -> avatar #Change value of book factors to the names of the books
+#(there was a variable with book names already, so you could use that instead and change the ordering of it as it would default to alphabetical)
 
 extrafont::font_import("~/tvthemes/fonts/Slayer",prompt = FALSE) #Load specific font that is downloaded to your system.
 extrafont::fonts()
