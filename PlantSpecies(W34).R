@@ -67,7 +67,7 @@ for (i in 1:7){
       text = element_text(family = "serif")
     )
 
-  ggsave(plot = plot, filename=paste("myplot", i, ".png", sep = ""), path = "C:/Users/Geetanjali/OneDrive/tidytuesday/week 34", dpi = 300, height = 4.5, width = 6)
+  ggsave(plot = plot, filename=paste("myplot", i, ".png", sep = ""), path = "~/tidytuesday/week 34", dpi = 300, height = 4.5, width = 6)
   
   
 }
@@ -75,9 +75,9 @@ for (i in 1:7){
 
 #stitch together
 library(magick)
-list.files(path = "C:/Users/Geetanjali/OneDrive/tidytuesday/week 34", pattern = "*.png", full.names = T) %>% 
+list.files(path = "~tidytuesday/week 34", pattern = "*.png", full.names = T) %>% 
   map(image_read) %>% 
   image_join() %>% 
   image_animate(fps=1) %>% 
-  image_write("plantsex.gif")
+  image_write("PlantsExtinct.gif")
 
